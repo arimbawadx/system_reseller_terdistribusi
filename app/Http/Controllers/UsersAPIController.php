@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Imports\UsersImport;
-use App\Exports\UsersExport;
-use Maatwebsite\Excel\Facades\Excel;
 
-class UsersController extends Controller
+class UsersAPIController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,21 +14,10 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $dataUser = User::all();
-        return view('users.pages.index', compact('dataUser'));
-    }
-    public function import(Request $request) 
-    {
-        $file = $request->file('file');
-        $name = $file->getClientOriginalName();
-        $file->move('DataImportUsers', $name);
+        $user = User::all();
 
-        Excel::import(new UsersImport, public_path('/DataImportUsers/'.$name));
-        return redirect('/users')->with('success', 'Import Berhasil');
-    }
-    public function export() 
-    {
-        return Excel::download(new UsersExport, 'users.xlsx');
+        return response()->json($user);
+
     }
 
     /**
@@ -52,7 +38,14 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User;
+        $user->name = $request->name; 
+        $user->dob = $request->dob; 
+        $user->gender = $request->gender; 
+        $user->save();
+
+        return response()->json($user);
+
     }
 
     /**
@@ -63,7 +56,9 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::where('id', $id)->get();
+
+        return response()->json($user);
     }
 
     /**
