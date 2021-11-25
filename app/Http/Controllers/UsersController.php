@@ -17,8 +17,12 @@ class UsersController extends Controller
      */
     public function index()
     {
+        return view('users.pages.index');
+    }
+    public function read()
+    {
         $dataUser = User::all();
-        return view('users.pages.index', compact('dataUser'));
+        return view('users.pages.read', compact('dataUser'));
     }
     public function import(Request $request) 
     {
@@ -52,7 +56,11 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User;
+        $user -> name =  $request->nama;
+        $user -> dob =  $request->tgl_lahir;
+        $user -> gender =  $request->jenis_kelamin;
+        $user->save();
     }
 
     /**
